@@ -11,10 +11,15 @@ export function useFormState<T extends Record<string, string>>(
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<FieldErrors<T>>({});
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
     setValues((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: undefined }));
+  };
+
+  const reset = () => {
+    setValues(initialValues);
+    setErrors({});
   };
 
   const handleSubmit =
@@ -28,5 +33,5 @@ export function useFormState<T extends Record<string, string>>(
       }
     };
 
-  return { values, errors, handleChange, handleSubmit };
+  return { values, errors, handleChange, handleSubmit, reset };
 }

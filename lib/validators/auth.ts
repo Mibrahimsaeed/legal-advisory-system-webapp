@@ -1,6 +1,6 @@
 import type { FieldErrors } from "@/hooks/use-form-state";
+import { validateEmail } from "@/lib/validators/common";
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
 
 export interface LoginValues {
@@ -11,11 +11,6 @@ export interface LoginValues {
 export interface SignupValues extends LoginValues {
   fullName: string;
   confirmPassword: string;
-}
-
-function validateEmail(email: string) {
-  if (!email.trim()) return "Email is required.";
-  if (!EMAIL_PATTERN.test(email)) return "Enter a valid email address.";
 }
 
 export function validateLogin({
