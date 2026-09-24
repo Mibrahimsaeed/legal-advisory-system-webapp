@@ -4,11 +4,11 @@ import { CapabilitiesSection } from "@/components/landing/capabilities-section";
 import { ContactSection } from "@/components/landing/contact-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { HeroSection } from "@/components/landing/hero-section";
-import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { LandingFooter } from "@/components/landing/landing-footer";
+import { KnowledgeGraphSection } from "@/components/landing/knowledge-graph-section";
 import { LandingHeader } from "@/components/landing/landing-header";
+import { LegalResearchSection } from "@/components/landing/legal-research-section";
 import { ShowcaseSection } from "@/components/landing/showcase-section";
-import { WorkflowSection } from "@/components/landing/workflow-section";
 
 export const metadata: Metadata = {
   title: { absolute: "Legal Intelligence | AI-Powered Legal Research for Pakistani Law" },
@@ -22,11 +22,11 @@ export default function Home() {
       <LandingHeader />
       <main>
         <HeroSection />
-        <WorkflowSection />
+        <LegalResearchSection />
+        <KnowledgeGraphSection />
         <CapabilitiesSection />
         <ShowcaseSection />
         <AboutSection />
-        <HowItWorksSection />
         <CtaSection />
         <ContactSection />
       </main>

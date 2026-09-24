@@ -3,10 +3,14 @@
 // createLegalGraph(...) → { object, update(dt, t), dispose() }
 import * as THREE from 'three';
 
+// Brand primary: oklch(0.2643 0.0345 262.71) → sRGB #1C2536. (three.js r186 cannot parse oklch strings,
+// so every tone below is the same hue (262.71°) converted to sRGB.)
 const C = {
-  ivory: '#FFFFFF', charcoal: '#1E1F1C', ink: '#0B0B0A',
-  emerald: '#0F5A43', emeraldLit: '#1F8A66', mint: '#8FD4B6',
-  graphite: '#2E302D', steel: '#C9CAC4', hair: '#8C8A82', muted: '#55544F',
+  primary: '#1C2536',
+  primaryDark: '#0C1421', primaryMid: '#3E4D69', primaryLight: '#6F81A2', primaryGlow: '#94A5C5', primaryMist: '#C7D1E5',
+  glassNode: '#303D55',
+  ivory: '#FFFFFF', charcoal: '#171717', ink: '#11110F',
+  graphite: '#292B28', steel: '#B9BBB4', hair: '#77766F', muted: '#55544F',
 };
 
 export const NODES = [
@@ -63,7 +67,7 @@ function drawCard(card, renderer) {
   const pad = 44, r = rng(card.seed);
   const ls = (v) => { if ('letterSpacing' in ctx) ctx.letterSpacing = v; };
   // tag row
-  ctx.fillStyle = C.emerald; ctx.beginPath(); ctx.arc(pad + 5, pad + 11, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = C.primary; ctx.beginPath(); ctx.arc(pad + 5, pad + 11, 5, 0, Math.PI * 2); ctx.fill();
   ctx.font = '500 19px "Geist Mono", ui-monospace, monospace'; ls('3px');
   ctx.fillText(card.tag.toUpperCase(), pad + 22, pad + 18);
   ctx.fillStyle = C.hair; ctx.textAlign = 'right'; ctx.fillText(card.ref, W - pad, pad + 18); ctx.textAlign = 'left'; ls('0px');
@@ -81,8 +85,8 @@ function drawCard(card, renderer) {
     const last = i === rows - 1 || r() < 0.14;
     const w = (W - pad * 2) * (last ? 0.35 + r() * 0.3 : 0.82 + r() * 0.18);
     const hi = card.highlight && (i === 2 || i === 3);
-    if (hi) { ctx.fillStyle = 'rgba(31,138,102,0.12)'; ctx.fillRect(pad - 10, y - 8, W - pad * 2 + 20, 24); }
-    bar(pad, y, w, hi ? 'rgba(15,90,67,0.55)' : 'rgba(30,31,28,0.10)');
+    if (hi) { ctx.fillStyle = 'rgba(111,129,162,0.18)'; ctx.fillRect(pad - 10, y - 8, W - pad * 2 + 20, 24); }
+    bar(pad, y, w, hi ? 'rgba(28,37,54,0.62)' : 'rgba(30,31,28,0.10)');
     y += last && i !== rows - 1 ? 36 : 24;
     if (y > H - pad - 90) break;
   }
@@ -90,7 +94,7 @@ function drawCard(card, renderer) {
   ctx.fillStyle = 'rgba(30,31,28,0.16)'; ctx.fillRect(pad, H - pad - 44, W - pad * 2, 1.5);
   ctx.fillStyle = C.charcoal; ctx.font = '500 18px "Geist Mono", ui-monospace, monospace'; ls('2px');
   ctx.fillText(card.foot.toUpperCase(), pad, H - pad - 6);
-  ctx.fillStyle = C.emerald; ctx.textAlign = 'right'; ctx.fillText('→', W - pad, H - pad - 6);
+  ctx.fillStyle = C.primary; ctx.textAlign = 'right'; ctx.fillText('→', W - pad, H - pad - 6);
   const tex = new THREE.CanvasTexture(cv);
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -111,12 +115,12 @@ function injectCSS() {
   if (cssInjected || typeof document === 'undefined') return; cssInjected = true;
   const s = document.createElement('style');
   s.textContent = `
-.lig-label{position:absolute;left:0;top:0;display:flex;align-items:center;gap:8px;font:500 10.5px/1 "Geist Mono",ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:#1E1F1C;white-space:nowrap;will-change:transform,opacity;transition:color .5s ease;pointer-events:none}
+.lig-label{position:absolute;left:0;top:0;display:flex;align-items:center;gap:8px;font:500 10.5px/1 "Geist Mono",ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:${C.charcoal};white-space:nowrap;will-change:transform,opacity;transition:color .5s ease;pointer-events:none}
 .lig-label.is-left{flex-direction:row-reverse}
 .lig-tick{width:16px;height:1px;background:currentColor;opacity:.3;transition:width .6s cubic-bezier(.2,.7,.2,1),opacity .4s}
-.lig-idx{color:#8C8A82}
+.lig-idx{color:${C.hair}}
 .lig-detail{font:400 12.5px/1 Geist,system-ui,sans-serif;letter-spacing:0;text-transform:none;color:#4A4944;max-width:0;overflow:hidden;opacity:0;transition:max-width .7s cubic-bezier(.2,.7,.2,1),opacity .5s}
-.lig-label.is-hover{color:#0F5A43}
+.lig-label.is-hover{color:${C.primaryMid}}
 .lig-label.is-hover .lig-tick{width:26px;opacity:.7}
 .lig-label.is-hover .lig-detail{max-width:260px;opacity:1}`;
   document.head.appendChild(s);
@@ -148,21 +152,21 @@ export async function createLegalGraph(opts) {
   const rig = new THREE.Group(); rig.name = 'lighting';
   rig.add(new THREE.HemisphereLight(0xffffff, 0xd6d0c4, 0.7));
   const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(4, 6, 6); rig.add(key);
-  const rim = new THREE.DirectionalLight(0xe4f0ea, 0.9); rim.position.set(-5, 2, -4); rig.add(rim);
+  const rim = new THREE.DirectionalLight(C.primaryMist, 0.9); rim.position.set(-5, 2, -4); rig.add(rim);
   scene.add(rig);
 
   // ─── materials (small shared palette) ───
   const glassBase = { color: 0xffffff, metalness: 0, transmission: 1, ior: 1.46, clearcoat: 1, clearcoatRoughness: 0.05, specularIntensity: 1, envMapIntensity: 1.15 };
   const M = {
-    glass: new THREE.MeshPhysicalMaterial({ ...glassBase, name: 'core_glass', roughness: 0.06, thickness: 1.5, attenuationColor: new THREE.Color('#2F4F45'), attenuationDistance: 1.9 }),
-    bead: new THREE.MeshPhysicalMaterial({ ...glassBase, name: 'node_glass', roughness: 0.1, thickness: 0.2, attenuationColor: new THREE.Color('#1E4A3C'), attenuationDistance: 0.12 }),
+    glass: new THREE.MeshPhysicalMaterial({ ...glassBase, name: 'core_glass', roughness: 0.06, thickness: 1.5, attenuationColor: new THREE.Color(C.glassNode), attenuationDistance: 1.9 }),
+    bead: new THREE.MeshPhysicalMaterial({ ...glassBase, name: 'node_glass', roughness: 0.1, thickness: 0.2, attenuationColor: new THREE.Color(C.glassNode), attenuationDistance: 0.12 }),
     steel: new THREE.MeshStandardMaterial({ name: 'brushed_steel', color: C.steel, metalness: 1, roughness: 0.26 }),
     graphite: new THREE.MeshStandardMaterial({ name: 'graphite', color: C.graphite, metalness: 0.85, roughness: 0.32 }),
-    energy: new THREE.MeshStandardMaterial({ name: 'emerald_energy', color: C.emerald, emissive: C.emeraldLit, emissiveIntensity: 1.1, roughness: 0.4 }),
-    nucleus: new THREE.MeshStandardMaterial({ name: 'core_nucleus', color: C.emerald, emissive: C.emeraldLit, emissiveIntensity: 1.6, roughness: 0.3 }),
-    spark: new THREE.MeshBasicMaterial({ name: 'emerald_spark', color: new THREE.Color(C.mint).multiplyScalar(2.2), toneMapped: false }),
-    lattice: new THREE.LineBasicMaterial({ name: 'emerald_lattice', color: new THREE.Color('#5CC39C').multiplyScalar(1.6), toneMapped: false }),
-    latticeDim: new THREE.LineBasicMaterial({ name: 'emerald_lattice_inner', color: new THREE.Color('#2F9A74').multiplyScalar(1.4), toneMapped: false }),
+    energy: new THREE.MeshStandardMaterial({ name: 'primary_energy', color: C.primary, emissive: C.primaryLight, emissiveIntensity: 1.1, roughness: 0.4 }),
+    nucleus: new THREE.MeshStandardMaterial({ name: 'core_nucleus', color: C.primary, emissive: C.primaryLight, emissiveIntensity: 1.6, roughness: 0.3 }),
+    spark: new THREE.MeshBasicMaterial({ name: 'primary_spark', color: new THREE.Color(C.primaryGlow).multiplyScalar(1.5), toneMapped: false }),
+    lattice: new THREE.LineBasicMaterial({ name: 'primary_lattice', color: new THREE.Color(C.primaryGlow).multiplyScalar(1.2), toneMapped: false }),
+    latticeDim: new THREE.LineBasicMaterial({ name: 'primary_lattice_inner', color: new THREE.Color(C.primaryLight).multiplyScalar(1.15), toneMapped: false }),
     edge: new THREE.LineBasicMaterial({ name: 'graph_edge', vertexColors: true, transparent: true, depthWrite: false, toneMapped: false }),
     flow: new THREE.MeshBasicMaterial({ name: 'flow_particle', color: 0xffffff, toneMapped: false }),
     card: new THREE.MeshPhysicalMaterial({ name: 'card_glass', color: 0xffffff, metalness: 0, roughness: 0.3, transmission: 0.7, thickness: 0.06, ior: 1.4, clearcoat: 0.5, clearcoatRoughness: 0.2 }),
@@ -172,7 +176,7 @@ export async function createLegalGraph(opts) {
   const textures = [];
   const mesh = (geo, mat, name) => { const m = new THREE.Mesh(geo, mat); m.name = name; return m; };
 
-  const root = new THREE.Group(); root.name = 'LegalIntelligence';
+  const root = new THREE.Group(); root.name = 'LegalIntelligence'; root.scale.setScalar(0.88);
   const graph = new THREE.Group(); graph.name = 'knowledge_graph'; root.add(graph);
 
   // ─── AI core ───
@@ -222,7 +226,7 @@ export async function createLegalGraph(opts) {
     body.add(mesh(seedG, M.energy, 'node_' + n.id + '_seed'));
     const ring = mesh(ringG, M.steel, 'node_' + n.id + '_ring'); body.add(ring);
     const arc = mesh(arcG, M.graphite, 'node_' + n.id + '_arc'); body.add(arc);
-    const haloMat = new THREE.MeshBasicMaterial({ name: 'hover_halo', color: C.emeraldLit, transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
+    const haloMat = new THREE.MeshBasicMaterial({ name: 'hover_halo', color: C.primaryMid, transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
     const halo = mesh(haloG, haloMat, 'node_' + n.id + '_halo'); g.add(halo);
     const el = document.createElement('div'); el.className = 'lig-label';
     el.innerHTML = `<i class="lig-tick"></i><span class="lig-idx">${n.idx}</span><span class="lig-name">${n.label}</span><span class="lig-detail">${n.detail}</span>`;
@@ -233,7 +237,8 @@ export async function createLegalGraph(opts) {
 
   // ─── edges ───
   const SEG = 72;
-  const bgC = new THREE.Color(C.ivory), baseC = new THREE.Color('#7E7C75'), hiC = new THREE.Color(C.emeraldLit);
+  const bgC = new THREE.Color(C.ivory), baseC = new THREE.Color(C.hair), hiC = new THREE.Color(C.primary);
+  const trailTones = [C.primaryDark, C.primary, C.primaryMid, C.primaryLight, C.primaryGlow].map((c) => new THREE.Color(c));
   const makeEdge = (a, b, isCore, i) => {
     const pos = new Float32Array(SEG * 3), col = new Float32Array(SEG * 4);
     const geo = new THREE.BufferGeometry();
@@ -434,7 +439,7 @@ export async function createLegalGraph(opts) {
         f.e.curve.getPoint(f.dir > 0 ? u : 1 - u, P);
         dummy.position.copy(P); dummy.scale.setScalar((0.021 - j * 0.0034) * boost); dummy.updateMatrix();
         flowMesh.setMatrixAt(idx, dummy.matrix);
-        tmpC.copy(bgC).lerp(hiC, vis * (1 - j * 0.18)); flowMesh.setColorAt(idx, tmpC);
+        tmpC.copy(bgC).lerp(trailTones[Math.min(j, trailTones.length - 1)], vis * (1 - j * 0.12)); flowMesh.setColorAt(idx, tmpC);
         idx++;
       }
     }

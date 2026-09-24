@@ -5,7 +5,7 @@ import { ROUTES } from "@/lib/constants/routes";
 
 export function CtaSection() {
   return (
-    <section className="py-20 sm:py-28">
+    <section className="flex min-h-[100svh] items-center py-20 sm:py-28">
       <Container>
         <div className="reveal flex flex-col items-center gap-6 rounded-3xl bg-primary px-6 py-16 text-center text-primary-foreground sm:px-12">
           <h2 className="font-heading max-w-2xl text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">

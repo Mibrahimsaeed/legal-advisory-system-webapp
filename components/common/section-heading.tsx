@@ -5,6 +5,7 @@ interface SectionHeadingProps {
   title: string;
   description?: string;
   align?: "left" | "center";
+  inverted?: boolean;
   className?: string;
 }
 
@@ -13,8 +14,11 @@ export function SectionHeading({
   title,
   description,
   align = "center",
+  inverted = false,
   className,
 }: SectionHeadingProps) {
+  const subtle = inverted ? "text-primary-foreground/70" : "text-muted-foreground";
+
   return (
     <div
       className={cn(
@@ -24,7 +28,7 @@ export function SectionHeading({
       )}
     >
       {eyebrow && (
-        <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase">
+        <p className={cn("text-xs font-medium tracking-[0.18em] uppercase", subtle)}>
           {eyebrow}
         </p>
       )}
@@ -32,9 +36,7 @@ export function SectionHeading({
         {title}
       </h2>
       {description && (
-        <p className="text-base leading-7 text-muted-foreground sm:text-lg">
-          {description}
-        </p>
+        <p className={cn("text-base leading-7 sm:text-lg", subtle)}>{description}</p>
       )}
     </div>
   );

@@ -24,7 +24,7 @@ export function MobileNav() {
           <Button
             variant="outline"
             size="icon"
-            className="md:hidden"
+            className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground md:hidden dark:border-primary-foreground/30 dark:bg-transparent dark:hover:bg-primary-foreground/10"
             aria-label="Open navigation menu"
           />
         }

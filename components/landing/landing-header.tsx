@@ -16,29 +16,36 @@ export function LandingHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 border-b transition-[background-color,border-color,box-shadow] duration-200",
+        "sticky top-0 z-40 border-b text-primary-foreground transition-[background-color,border-color,box-shadow] duration-200",
         scrolled
-          ? "border-border bg-background/90 shadow-sm backdrop-blur"
-          : "border-transparent bg-background",
+          ? "border-primary-foreground/10 bg-primary/95 shadow-md backdrop-blur"
+          : "border-transparent bg-primary",
       )}
     >
-      <Container className="flex h-16 items-center justify-between gap-6">
+      <Container className="flex h-[4.5rem] items-center justify-between gap-6 md:h-20">
         <Link href={ROUTES.home} aria-label="Legal Intelligence home">
-          <BrandLogo className="text-xl" />
+          <BrandLogo className="text-xl md:text-2xl [&>svg]:size-5 md:[&>svg]:size-6" />
         </Link>
-        <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
+        <nav aria-label="Primary" className="hidden items-center gap-10 md:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="text-base text-primary-foreground/70 transition-colors hover:text-primary-foreground"
             >
               {link.label}
             </Link>
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <LinkButton href={ROUTES.login}>Launch App</LinkButton>
+          <LinkButton
+            href={ROUTES.login}
+            variant="secondary"
+            size="lg"
+            className="md:h-11 md:px-5"
+          >
+            Launch App
+          </LinkButton>
           <MobileNav />
         </div>
       </Container>
