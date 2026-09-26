@@ -37,7 +37,6 @@ export interface LegalAnswer {
   analysis: AnswerSegment[];
   conclusion: AnswerSegment[];
   sources: LegalSource[];
-  passageCount: number;
 }
 
 export interface ConsultationMessage {

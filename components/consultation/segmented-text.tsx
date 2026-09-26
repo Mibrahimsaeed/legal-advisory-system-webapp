@@ -14,7 +14,7 @@ export function SegmentedText({ segments, sources }: SegmentedTextProps) {
         return (
           <span key={index}>
             {segment.text}
-            {segment.sourceId && number > 0 && <Citation sourceId={segment.sourceId} number={number} />}
+            {segment.sourceId && number > 0 && <Citation number={number} />}
           </span>
         );
       })}

@@ -1,6 +1,7 @@
 import { AnswerSection } from "@/components/consultation/answer-section";
 import { AuthorityItem } from "@/components/consultation/authority-item";
 import { SegmentedText } from "@/components/consultation/segmented-text";
+import { PROTOTYPE_NOTICE } from "@/lib/constants/consultation";
 import type { LegalAnswer as LegalAnswerData } from "@/lib/store/features/consultations/consultations.types";
 
 function AuthorityList({ answer, authorities }: { answer: LegalAnswerData; authorities: LegalAnswerData["applicableLaw"] }) {
@@ -34,7 +35,8 @@ export function LegalAnswer({ answer }: { answer: LegalAnswerData }) {
         <SegmentedText segments={answer.conclusion} sources={answer.sources} />
       </AnswerSection>
       <p className="border-t pt-4 text-xs leading-5 text-muted-foreground">
-        Legal research output for decision support. It is not legal advice and does not replace qualified legal counsel.
+        Legal research output for decision support. It is not legal advice and does not replace qualified legal counsel.{" "}
+        {PROTOTYPE_NOTICE}
       </p>
     </article>
   );

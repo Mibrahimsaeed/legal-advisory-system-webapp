@@ -34,7 +34,6 @@ const divorce: LegalAnswer = {
     { id: "case-pld-2023-sc-421", kind: "case", title: "PLD 2023 SC 421", court: "Supreme Court of Pakistan", passage: "Illustrative passage: the Court examined the evidence of the alleged conduct and asked whether it amounted to cruelty within the meaning of the Act.", principle: "Cruelty is a question of fact, proved on evidence and assessed in context.", relevance: "Shows the evidentiary approach courts take to the ground." },
     { id: "case-pld-2022-lah-xxx", kind: "case", title: "PLD 2022 Lahore XXX", court: "Lahore High Court", passage: "Illustrative passage: the High Court reviewed the Family Court's appreciation of the evidence on the pleaded ground.", principle: "Findings on the ground must rest on the whole record.", relevance: "Indicates how findings on the pleaded ground are reviewed." },
   ],
-  passageCount: 7,
 };
 
 const guardianship: LegalAnswer = {
@@ -67,7 +66,6 @@ const guardianship: LegalAnswer = {
     { id: "case-2022-scmr-1156", kind: "case", title: "2022 SCMR 1156", court: "Supreme Court of Pakistan", passage: "Illustrative passage: the Court held that the welfare of the minor is the paramount consideration in custody disputes.", principle: "Welfare of the minor outweighs the competing claims of the parents.", relevance: "Confirms the governing test." },
     { id: "case-pld-2021-lah-xxx", kind: "case", title: "PLD 2021 Lahore XXX", court: "Lahore High Court", passage: "Illustrative passage: the High Court considered the age of the child and the care given by the mother in the early years.", principle: "The child's age and need for care are weighed within the welfare inquiry.", relevance: "Shows how welfare is applied to a young child." },
   ],
-  passageCount: 6,
 };
 
 const criminal: LegalAnswer = {
@@ -100,7 +98,6 @@ const criminal: LegalAnswer = {
     { id: "case-pld-2020-sc-xxx", kind: "case", title: "PLD 2020 SC XXX", court: "Supreme Court of Pakistan", passage: "Illustrative passage: the Court inferred intention from the weapon used, the part of the body targeted and the circumstances of the incident.", principle: "Intention is inferred from the surrounding circumstances.", relevance: "Shows how intention is established in practice." },
     { id: "case-2019-scmr-xxx", kind: "case", title: "2019 SCMR XXX", court: "Supreme Court of Pakistan", passage: "Illustrative passage: the Court stressed that a conviction must rest on reliable, confidence-inspiring evidence.", principle: "Guilt must be established on evidence that inspires confidence.", relevance: "States the standard the prosecution must meet." },
   ],
-  passageCount: 6,
 };
 
 const property: LegalAnswer = {
@@ -133,7 +130,6 @@ const property: LegalAnswer = {
     { id: "case-pld-2021-sc-xxx", kind: "case", title: "PLD 2021 SC XXX", court: "Supreme Court of Pakistan", passage: "Illustrative passage: the Court held that the buyer must show continued readiness and willingness to pay the balance.", principle: "Readiness and willingness must be shown throughout.", relevance: "States the buyer's burden." },
     { id: "case-2020-scmr-xxx", kind: "case", title: "2020 SCMR XXX", court: "Supreme Court of Pakistan", passage: "Illustrative passage: the Court examined the receipt and the surrounding conduct to decide whether the advance was proved.", principle: "Payment of an advance is proved on the record as a whole.", relevance: "Shows how the advance is established." },
   ],
-  passageCount: 6,
 };
 
 export const ANSWER_TEMPLATES: Record<AnswerTemplateId, LegalAnswer> = {
