@@ -36,11 +36,15 @@ export function ConsultationView({ consultationId }: { consultationId: string | 
     else setNewDomain(next);
   };
 
-  const send = () => {
+  const submit = (question: string) => {
     const id = consultationId ?? createConsultationId();
-    void dispatch(askQuestion({ consultationId: id, question: draft.trim(), domain, askedAt: new Date().toISOString() }));
-    setDraft("");
+    void dispatch(askQuestion({ consultationId: id, question, domain, askedAt: new Date().toISOString() }));
     if (!consultationId) router.push(ROUTES.consultationDetail(id));
+  };
+
+  const send = () => {
+    submit(draft.trim());
+    setDraft("");
   };
 
   const pickExample = (text: string) => {
@@ -76,7 +80,7 @@ export function ConsultationView({ consultationId }: { consultationId: string | 
             <Skeleton className="h-64 w-full" />
           </div>
         ) : hasMessages && consultation ? (
-          <ChatThread messages={consultation.messages} pending={pending} />
+          <ChatThread messages={consultation.messages} pending={pending} onRegenerate={submit} />
         ) : (
           <EmptyState onPick={pickExample} />
         )}

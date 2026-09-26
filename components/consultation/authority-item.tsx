@@ -9,7 +9,7 @@ interface AuthorityItemProps {
 
 export function AuthorityItem({ source, number, summary }: AuthorityItemProps) {
   return (
-    <div className="flex flex-col gap-1.5 rounded-lg border bg-background p-3.5">
+    <div className="flex flex-col gap-1.5 border-l-2 border-border py-0.5 pl-4">
       <div className="flex flex-wrap items-baseline gap-x-2">
         <Citation number={number} />
         <p className="text-sm font-semibold">{source.title}</p>

@@ -4,7 +4,7 @@ const STEP_DELAY_MS = 330;
 
 export function ThinkingState() {
   return (
-    <div role="status" aria-live="polite" className="flex flex-col gap-3 rounded-xl border bg-card p-5">
+    <div role="status" aria-live="polite" className="flex flex-col gap-3">
       <p className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Researching</p>
       <ol className="flex flex-col gap-2">
         {THINKING_STEPS.map((step, index) => (

@@ -30,7 +30,7 @@ export function ConsultationInput({ value, onChange, onSubmit, disabled, domain,
       }}
       className="border-t bg-background px-4 pt-3 pb-4 sm:px-6"
     >
-      <div className="mx-auto w-full max-w-3xl rounded-xl border bg-card transition-shadow focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
+      <div className="mx-auto w-full max-w-5xl rounded-xl border bg-card transition-shadow focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
         <Textarea
           ref={inputRef}
           value={value}
@@ -85,7 +85,7 @@ export function ConsultationInput({ value, onChange, onSubmit, disabled, domain,
           </Button>
         </div>
       </div>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-[11px] text-muted-foreground">
+      <p className="mx-auto mt-2 max-w-5xl text-center text-[11px] text-muted-foreground">
         Legal Intelligence supports legal research. It does not provide legal advice.
       </p>
     </form>
