@@ -22,7 +22,7 @@ export function ChatThread({ messages, pending, onRegenerate }: ChatThreadProps)
   }, [messages.length, pending]);
 
   return (
-    <div className="mx-auto flex w-full max-w-[67rem] flex-col gap-10 px-4 py-8 sm:px-6">
+    <div className="mx-auto flex w-full max-w-[51rem] flex-col gap-10 px-4 py-8 sm:px-6">
       {messages.map((message, index) => {
         const question = messages[index - 1]?.content;
         const canRegenerate = index === lastIndex && !pending && question !== undefined;

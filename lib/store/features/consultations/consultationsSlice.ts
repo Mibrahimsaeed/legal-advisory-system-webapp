@@ -49,10 +49,10 @@ const consultationsSlice = createSlice({
         state.error = action.payload ?? "Could not load consultations.";
       })
       .addCase(askQuestion.pending, (state, action) => {
-        const { consultationId, question, domain, askedAt } = action.meta.arg;
+        const { consultationId, question, domain, archetype, askedAt } = action.meta.arg;
         let consultation = state.items.find((item) => item.id === consultationId);
         if (!consultation) {
-          consultation = { id: consultationId, title: titleFromQuestion(question), domain, updatedAt: askedAt, messages: [] };
+          consultation = { id: consultationId, title: titleFromQuestion(question), domain, archetype, updatedAt: askedAt, messages: [] };
           state.items.unshift(consultation);
         }
         consultation.messages.push({ id: `${action.meta.requestId}-q`, role: "user", content: question });

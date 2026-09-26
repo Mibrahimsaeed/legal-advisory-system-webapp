@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { CircleHelpIcon, PlusIcon, SettingsIcon } from "lucide-react";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { LinkButton } from "@/components/common/link-button";
+import { ArchetypeNav } from "@/components/workspace/archetype-nav";
 import { ConsultationHistory } from "@/components/workspace/consultation-history";
 import { SidebarUserMenu } from "@/components/workspace/sidebar-user-menu";
 import {
@@ -49,6 +50,8 @@ export function WorkspaceSidebar() {
         </LinkButton>
       </SidebarHeader>
       <SidebarContent>
+        <ArchetypeNav />
+        <SidebarSeparator />
         <ConsultationHistory />
       </SidebarContent>
       <SidebarFooter>
