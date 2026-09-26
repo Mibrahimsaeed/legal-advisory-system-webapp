@@ -11,7 +11,7 @@ export function AnswerSection({ index, title, children }: AnswerSectionProps) {
         <span className="font-mono text-[11px] text-muted-foreground">{index}</span>
         <span className="font-heading text-xl font-semibold">{title}</span>
       </h3>
-      <div className="flex flex-col gap-3 pl-0 sm:pl-8">{children}</div>
+      <div className="flex flex-col gap-3">{children}</div>
     </section>
   );
 }

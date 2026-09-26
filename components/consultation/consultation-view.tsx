@@ -7,6 +7,7 @@ import { ConsultationHeader } from "@/components/consultation/consultation-heade
 import { ConsultationInput } from "@/components/consultation/consultation-input";
 import { EmptyState } from "@/components/consultation/empty-state";
 import { LinkButton } from "@/components/common/link-button";
+import { getArchetype } from "@/lib/constants/archetypes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ROUTES } from "@/lib/constants/routes";
 import type { LegalDomain } from "@/lib/store/features/consultations/consultations.types";
@@ -20,7 +21,12 @@ import {
 import { askQuestion } from "@/lib/store/features/consultations/consultationsThunks";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 
-export function ConsultationView({ consultationId }: { consultationId: string | null }) {
+interface ConsultationViewProps {
+  consultationId: string | null;
+  archetypeId?: string | null;
+}
+
+export function ConsultationView({ consultationId, archetypeId = null }: ConsultationViewProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const consultation = useAppSelector(selectConsultationById(consultationId));
@@ -30,17 +36,22 @@ export function ConsultationView({ consultationId }: { consultationId: string | 
   const [draft, setDraft] = useState("");
   const [newDomain, setNewDomain] = useState<LegalDomain>("general");
   const domain = consultation?.domain ?? newDomain;
+  const archetype = getArchetype(consultation?.archetype ?? archetypeId);
 
   const changeDomain = (next: LegalDomain) => {
     if (consultation) dispatch(consultationDomainChanged({ id: consultation.id, domain: next }));
     else setNewDomain(next);
   };
 
-  const send = () => {
+  const submit = (question: string) => {
     const id = consultationId ?? createConsultationId();
-    void dispatch(askQuestion({ consultationId: id, question: draft.trim(), domain, askedAt: new Date().toISOString() }));
-    setDraft("");
+    void dispatch(askQuestion({ consultationId: id, question, domain, archetype: archetype?.id, askedAt: new Date().toISOString() }));
     if (!consultationId) router.push(ROUTES.consultationDetail(id));
+  };
+
+  const send = () => {
+    submit(draft.trim());
+    setDraft("");
   };
 
   const pickExample = (text: string) => {
@@ -67,6 +78,7 @@ export function ConsultationView({ consultationId }: { consultationId: string | 
       <ConsultationHeader
         title={consultation?.title ?? "New Consultation"}
         domain={domain}
+        archetypeLabel={archetype?.label}
         onDomainChange={changeDomain}
       />
       <div className="min-h-0 flex-1 overflow-y-auto">
@@ -76,9 +88,9 @@ export function ConsultationView({ consultationId }: { consultationId: string | 
             <Skeleton className="h-64 w-full" />
           </div>
         ) : hasMessages && consultation ? (
-          <ChatThread messages={consultation.messages} pending={pending} />
+          <ChatThread messages={consultation.messages} pending={pending} onRegenerate={submit} />
         ) : (
-          <EmptyState onPick={pickExample} />
+          <EmptyState onPick={pickExample} archetype={archetype} />
         )}
       </div>
       <ConsultationInput
@@ -87,6 +99,7 @@ export function ConsultationView({ consultationId }: { consultationId: string | 
         onSubmit={send}
         disabled={pending}
         domain={domain}
+        placeholder={archetype?.placeholder ?? "Describe your legal issue or ask a question..."}
         inputRef={inputRef}
       />
     </section>

@@ -14,10 +14,11 @@ interface ConsultationInputProps {
   onSubmit: () => void;
   disabled: boolean;
   domain: LegalDomain;
+  placeholder: string;
   inputRef: React.RefObject<HTMLTextAreaElement | null>;
 }
 
-export function ConsultationInput({ value, onChange, onSubmit, disabled, domain, inputRef }: ConsultationInputProps) {
+export function ConsultationInput({ value, onChange, onSubmit, disabled, domain, placeholder, inputRef }: ConsultationInputProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const canSend = value.trim().length > 0 && !disabled;
@@ -43,7 +44,7 @@ export function ConsultationInput({ value, onChange, onSubmit, disabled, domain,
           }}
           rows={2}
           aria-label="Legal question"
-          placeholder="Describe your legal issue or ask a question..."
+          placeholder={placeholder}
           className="max-h-48 min-h-16 resize-none rounded-b-none border-0 bg-transparent px-4 pt-3 text-[15px] shadow-none focus-visible:border-transparent focus-visible:ring-0 dark:bg-transparent"
         />
         <div className="flex items-center gap-2 px-3 pb-3">

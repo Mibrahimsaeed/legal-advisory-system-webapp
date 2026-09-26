@@ -18,9 +18,9 @@ function AuthorityList({ answer, authorities }: { answer: LegalAnswerData; autho
 
 export function LegalAnswer({ answer }: { answer: LegalAnswerData }) {
   return (
-    <article className="flex flex-col gap-8 rounded-xl border bg-card p-5 sm:p-7">
+    <article className="flex flex-col gap-8">
       <AnswerSection index="01" title="Legal issue">
-        <p className="text-[15px] leading-7">{answer.issue}</p>
+        <p className="max-w-3xl text-[15px] leading-7">{answer.issue}</p>
       </AnswerSection>
       <AnswerSection index="02" title="Applicable law">
         <AuthorityList answer={answer} authorities={answer.applicableLaw} />
@@ -34,7 +34,7 @@ export function LegalAnswer({ answer }: { answer: LegalAnswerData }) {
       <AnswerSection index="05" title="Conclusion">
         <SegmentedText segments={answer.conclusion} sources={answer.sources} />
       </AnswerSection>
-      <p className="border-t pt-4 text-xs leading-5 text-muted-foreground">
+      <p className="text-xs leading-5 text-muted-foreground">
         Legal research output for decision support. It is not legal advice and does not replace qualified legal counsel.{" "}
         {PROTOTYPE_NOTICE}
       </p>

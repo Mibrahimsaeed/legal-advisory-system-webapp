@@ -1,5 +1,11 @@
 export type LegalDomain = "general" | "family" | "criminal";
 
+export type ArchetypeId =
+  | "scenario-analysis"
+  | "statutory-provision"
+  | "case-law-research"
+  | "legal-remedies";
+
 interface SourceBase {
   id: string;
   title: string;
@@ -51,6 +57,7 @@ export interface Consultation {
   id: string;
   title: string;
   domain: LegalDomain;
+  archetype?: ArchetypeId;
   updatedAt: string;
   messages: ConsultationMessage[];
 }
@@ -59,5 +66,6 @@ export interface AskQuestionPayload {
   consultationId: string;
   question: string;
   domain: LegalDomain;
+  archetype?: ArchetypeId;
   askedAt: string;
 }

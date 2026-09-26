@@ -1,9 +1,9 @@
 import type { LegalDomain } from "@/lib/store/features/consultations/consultations.types";
 
-export const DOMAIN_OPTIONS: readonly { value: LegalDomain; label: string }[] = [
-  { value: "general", label: "General Pakistani Law" },
-  { value: "family", label: "Family Law" },
-  { value: "criminal", label: "Criminal Law" },
+export const DOMAIN_OPTIONS: readonly { value: LegalDomain; label: string; description: string }[] = [
+  { value: "general", label: "General Pakistani Law", description: "Contracts, property and civil matters" },
+  { value: "family", label: "Family Law", description: "Marriage, dissolution, maintenance and custody" },
+  { value: "criminal", label: "Criminal Law", description: "Penal Code, procedure and bail" },
 ];
 
 export const isLegalDomain = (value: unknown): value is LegalDomain =>
