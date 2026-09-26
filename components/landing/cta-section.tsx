@@ -1,7 +1,6 @@
 import { ArrowRightIcon } from "lucide-react";
 import { Container } from "@/components/common/container";
-import { LinkButton } from "@/components/common/link-button";
-import { ROUTES } from "@/lib/constants/routes";
+import { LaunchButton } from "@/components/landing/launch-button";
 
 export function CtaSection() {
   return (
@@ -15,10 +14,10 @@ export function CtaSection() {
             Explore legal questions through a research workflow designed around
             relevant authorities, evidence, and citations.
           </p>
-          <LinkButton href={ROUTES.login} variant="secondary" large>
+          <LaunchButton variant="secondary" large>
             Launch Legal Intelligence
             <ArrowRightIcon />
-          </LinkButton>
+          </LaunchButton>
         </div>
       </Container>
     </section>

@@ -38,3 +38,14 @@ export const logoutUser = createAppAsyncThunk(
     }
   },
 );
+
+export const restoreSession = createAppAsyncThunk(
+  "auth/restoreSession",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await authApi.session();
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error));
+    }
+  },
+);

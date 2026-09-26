@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { Container } from "@/components/common/container";
-import { LinkButton } from "@/components/common/link-button";
+import { LaunchButton } from "@/components/landing/launch-button";
 import { MobileNav } from "@/components/landing/mobile-nav";
 import { useScrolled } from "@/hooks/use-scrolled";
 import { NAV_LINKS } from "@/lib/constants/landing";
@@ -38,14 +38,13 @@ export function LandingHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <LinkButton
-            href={ROUTES.login}
+          <LaunchButton
             variant="secondary"
             size="lg"
             className="md:h-11 md:px-5"
           >
             Launch App
-          </LinkButton>
+          </LaunchButton>
           <MobileNav />
         </div>
       </Container>

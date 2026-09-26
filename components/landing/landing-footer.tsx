@@ -1,13 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { Container } from "@/components/common/container";
 import { APP_TAGLINE } from "@/lib/constants/app";
 import { NAV_LINKS } from "@/lib/constants/landing";
-import { ROUTES } from "@/lib/constants/routes";
-
-const FOOTER_LINKS = [...NAV_LINKS, { label: "Launch App", href: ROUTES.login }];
+import { useLaunchHref } from "@/hooks/use-launch-href";
 
 export function LandingFooter() {
+  const launchHref = useLaunchHref();
+  const footerLinks = [...NAV_LINKS, { label: "Launch App", href: launchHref }];
+
   return (
     <footer className="border-t bg-muted/50 py-14">
       <Container className="flex flex-col gap-10">
@@ -18,7 +21,7 @@ export function LandingFooter() {
           </div>
           <nav aria-label="Footer">
             <ul className="flex flex-col gap-3 text-sm">
-              {FOOTER_LINKS.map((link) => (
+              {footerLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}

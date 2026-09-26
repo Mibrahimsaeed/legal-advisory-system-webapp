@@ -2,8 +2,8 @@ import { ArrowRightIcon } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { LinkButton } from "@/components/common/link-button";
 import { HeroGraph } from "@/components/landing/hero-graph";
+import { LaunchButton } from "@/components/landing/launch-button";
 import { Badge } from "@/components/ui/badge";
-import { ROUTES } from "@/lib/constants/routes";
 
 export function HeroSection() {
   return (
@@ -21,10 +21,10 @@ export function HeroSection() {
           
         
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-            <LinkButton href={ROUTES.login} large>
+            <LaunchButton large>
               Launch Legal Intelligence
               <ArrowRightIcon />
-            </LinkButton>
+            </LaunchButton>
             <LinkButton href="/#how-it-works" variant="outline" large>
               Explore How It Works
             </LinkButton>

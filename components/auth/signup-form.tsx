@@ -32,7 +32,7 @@ export function SignupForm() {
 
   const onSubmit = async ({ fullName, email, password }: typeof values) => {
     const result = await dispatch(signupUser({ fullName, email, password }));
-    if (signupUser.fulfilled.match(result)) router.push(ROUTES.home);
+    if (signupUser.fulfilled.match(result)) router.push(ROUTES.consultation);
   };
 
   return (

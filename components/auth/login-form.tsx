@@ -32,7 +32,7 @@ export function LoginForm() {
 
   const onSubmit = async (payload: typeof values) => {
     const result = await dispatch(loginUser(payload));
-    if (loginUser.fulfilled.match(result)) router.push(ROUTES.home);
+    if (loginUser.fulfilled.match(result)) router.push(ROUTES.consultation);
   };
 
   return (
