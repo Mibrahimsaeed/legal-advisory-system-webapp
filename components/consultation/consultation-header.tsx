@@ -1,3 +1,4 @@
+import { ViewPlansButton } from "@/components/billing/view-plans-button";
 import { DomainSelector } from "@/components/consultation/domain-selector";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -20,7 +21,10 @@ export function ConsultationHeader({ title, domain, archetypeLabel, onDomainChan
           {archetypeLabel}
         </Badge>
       )}
-      <DomainSelector value={domain} onChange={onDomainChange} />
+      <div className="flex items-center gap-2">
+        <ViewPlansButton />
+        <DomainSelector value={domain} onChange={onDomainChange} />
+      </div>
     </header>
   );
 }

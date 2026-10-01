@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "@/lib/store/features/auth/authSlice";
 import consultationsReducer from "@/lib/store/features/consultations/consultationsSlice";
 import counterReducer from "@/lib/store/features/counter/counterSlice";
+import usageReducer from "@/lib/store/features/usage/usageSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -9,6 +10,7 @@ export const makeStore = () => {
       auth: authReducer,
       counter: counterReducer,
       consultations: consultationsReducer,
+      usage: usageReducer,
     },
   });
 };

@@ -6,4 +6,5 @@ export const ROUTES = {
   consultationDetail: (id: string) => `/consultation/${id}`,
   settings: "/settings",
   help: "/help",
+  upgrade: "/upgrade",
 } as const;
