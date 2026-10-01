@@ -6,7 +6,7 @@ import { FieldError, FieldGroup } from "@/components/ui/field";
 import { FormField } from "@/components/forms/form-field";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { useFormState } from "@/hooks/use-form-state";
-import { ROUTES } from "@/lib/constants/routes";
+import { getHomeRoute } from "@/lib/auth/roles";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   authErrorCleared,
@@ -32,7 +32,7 @@ export function LoginForm() {
 
   const onSubmit = async (payload: typeof values) => {
     const result = await dispatch(loginUser(payload));
-    if (loginUser.fulfilled.match(result)) router.push(ROUTES.consultation);
+    if (loginUser.fulfilled.match(result)) router.push(getHomeRoute(result.payload.user));
   };
 
   return (

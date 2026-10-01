@@ -7,4 +7,11 @@ export const ROUTES = {
   settings: "/settings",
   help: "/help",
   upgrade: "/upgrade",
+  admin: {
+    dashboard: "/admin",
+    users: "/admin/users",
+    rag: "/admin/rag",
+    analytics: "/admin/analytics",
+    profile: "/admin/profile",
+  },
 } as const;

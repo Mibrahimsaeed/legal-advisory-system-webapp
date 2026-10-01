@@ -7,6 +7,7 @@ import {
   writeSession,
   writeUsers,
 } from "@/lib/mock/auth-store";
+import { findDemoAdmin, isReservedAdminEmail } from "@/lib/mock/admin-accounts";
 import type {
   AuthResponse,
   LoginPayload,
@@ -23,6 +24,11 @@ const normalizeEmail = (email: string) => email.trim().toLowerCase();
 export const authApi = {
   login: async ({ email, password }: LoginPayload): Promise<AuthResponse> => {
     await wait();
+    const admin = findDemoAdmin(normalizeEmail(email), password);
+    if (admin) {
+      writeSession(admin);
+      return { user: admin };
+    }
     const passwordHash = await hashPassword(password);
     const match = readUsers().find(
       (user) => user.email === normalizeEmail(email) && user.passwordHash === passwordHash,
@@ -35,7 +41,7 @@ export const authApi = {
   signup: async ({ fullName, email, password }: SignupPayload): Promise<AuthResponse> => {
     await wait();
     const users = readUsers();
-    if (users.some((user) => user.email === normalizeEmail(email))) {
+    if (isReservedAdminEmail(normalizeEmail(email)) || users.some((user) => user.email === normalizeEmail(email))) {
       throw new ApiError("An account with this email already exists.", 409);
     }
     const user = { id: window.crypto.randomUUID(), fullName: fullName.trim(), email: normalizeEmail(email) };
