@@ -4,6 +4,7 @@ import { createAppAsyncThunk } from "@/lib/store/createAppAsyncThunk";
 import type {
   LoginPayload,
   SignupPayload,
+  UpdateProfilePayload,
 } from "@/lib/store/features/auth/auth.types";
 
 export const loginUser = createAppAsyncThunk(
@@ -22,6 +23,17 @@ export const signupUser = createAppAsyncThunk(
   async (payload: SignupPayload, { rejectWithValue }) => {
     try {
       return await authApi.signup(payload);
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error));
+    }
+  },
+);
+
+export const updateProfile = createAppAsyncThunk(
+  "auth/updateProfile",
+  async (payload: UpdateProfilePayload, { rejectWithValue }) => {
+    try {
+      return await authApi.updateProfile(payload);
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
     }

@@ -7,6 +7,7 @@ export const ROUTES = {
   settings: "/settings",
   help: "/help",
   upgrade: "/upgrade",
+  checkout: (planId: string) => `/checkout?plan=${planId}`,
   admin: {
     dashboard: "/admin",
     users: "/admin/users",

@@ -12,6 +12,7 @@ import type {
   AuthResponse,
   LoginPayload,
   SignupPayload,
+  UpdateProfilePayload,
 } from "@/lib/store/features/auth/auth.types";
 
 // Prototype implementation backed by localStorage. Swap each method for an
@@ -46,6 +47,15 @@ export const authApi = {
     }
     const user = { id: window.crypto.randomUUID(), fullName: fullName.trim(), email: normalizeEmail(email) };
     writeUsers([...users, { ...user, passwordHash: await hashPassword(password) }]);
+    writeSession(user);
+    return { user };
+  },
+  updateProfile: async ({ fullName }: UpdateProfilePayload): Promise<AuthResponse> => {
+    await wait();
+    const session = readSession();
+    if (!session) throw new ApiError("You are not signed in.", 401);
+    const user = { ...session, fullName: fullName.trim() };
+    writeUsers(readUsers().map((stored) => (stored.id === user.id ? { ...stored, fullName: user.fullName } : stored)));
     writeSession(user);
     return { user };
   },

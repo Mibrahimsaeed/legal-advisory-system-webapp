@@ -19,6 +19,9 @@ const PAID_FEATURES = [
   "No waiting between sessions",
 ] as const;
 
+export type PaidPlanId = Exclude<BillingPlan["id"], "free">;
+export type PaidPlan = BillingPlan & { id: PaidPlanId };
+
 export const BILLING_PLANS: readonly BillingPlan[] = [
   {
     id: "free",
@@ -56,3 +59,17 @@ export const BILLING_PLANS: readonly BillingPlan[] = [
     paid: true,
   },
 ];
+
+export function findPaidPlan(id: string | undefined): PaidPlan | null {
+  const plan = BILLING_PLANS.find((item) => item.id === id);
+  return plan && plan.id !== "free" ? { ...plan, id: plan.id } : null;
+}
+
+export const CHECKOUT_COUNTRIES = [
+  "Pakistan",
+  "United Arab Emirates",
+  "Saudi Arabia",
+  "United Kingdom",
+  "United States",
+  "Other",
+].map((label) => ({ value: label, label }));

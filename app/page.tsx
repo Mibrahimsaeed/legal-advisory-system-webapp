@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ForceLightTheme } from "@/components/common/force-light-theme";
 import { AboutSection } from "@/components/landing/about-section";
 import { CapabilitiesSection } from "@/components/landing/capabilities-section";
 import { ContactSection } from "@/components/landing/contact-section";
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
+      <ForceLightTheme />
       <LandingHeader />
       <main>
         <HeroSection />

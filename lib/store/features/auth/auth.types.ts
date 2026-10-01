@@ -16,6 +16,10 @@ export interface SignupPayload extends LoginPayload {
   fullName: string;
 }
 
+export interface UpdateProfilePayload {
+  fullName: string;
+}
+
 export interface AuthResponse {
   user: User;
 }

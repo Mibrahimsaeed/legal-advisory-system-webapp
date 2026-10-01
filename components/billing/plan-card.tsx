@@ -1,7 +1,7 @@
 import { ScaleIcon } from "lucide-react";
 import { CurrentPlanButton } from "@/components/billing/current-plan-button";
 import { PlanFeatureList } from "@/components/billing/plan-feature-list";
-import { SubscribeButton } from "@/components/billing/subscribe-button";
+import { ProceedToPaymentButton } from "@/components/billing/proceed-to-payment-button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -45,7 +45,7 @@ export function PlanCard({ plan }: { plan: BillingPlan }) {
           </p>
           <p className={cn("text-sm", subtle)}>{plan.period}</p>
         </div>
-        {paid ? <SubscribeButton /> : <CurrentPlanButton />}
+        {paid ? <ProceedToPaymentButton planId={plan.id} /> : <CurrentPlanButton />}
         <Separator className={cn(paid && "bg-primary-foreground/15")} />
         <PlanFeatureList features={plan.features} featured={paid} />
       </CardContent>
