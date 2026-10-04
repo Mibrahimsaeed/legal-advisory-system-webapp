@@ -1,7 +1,10 @@
+import type { UserRole } from "@/lib/auth/roles";
+
 export interface User {
   id: string;
   fullName: string;
   email: string;
+  role?: UserRole;
 }
 
 export interface LoginPayload {
@@ -10,6 +13,10 @@ export interface LoginPayload {
 }
 
 export interface SignupPayload extends LoginPayload {
+  fullName: string;
+}
+
+export interface UpdateProfilePayload {
   fullName: string;
 }
 

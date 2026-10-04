@@ -29,6 +29,10 @@ const consultationsSlice = createSlice({
   name: "consultations",
   initialState,
   reducers: {
+    consultationsCleared: (state) => {
+      state.items = [];
+      state.pendingIds = [];
+    },
     consultationDomainChanged: (
       state,
       action: PayloadAction<{ id: string; domain: LegalDomain }>,
@@ -80,7 +84,7 @@ const consultationsSlice = createSlice({
   },
 });
 
-export const { consultationDomainChanged } = consultationsSlice.actions;
+export const { consultationDomainChanged, consultationsCleared } = consultationsSlice.actions;
 export default consultationsSlice.reducer;
 
 export const selectConsultations = (state: RootState) => state.consultations.items;

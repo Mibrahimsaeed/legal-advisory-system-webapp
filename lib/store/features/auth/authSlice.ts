@@ -8,6 +8,7 @@ import {
   logoutUser,
   restoreSession,
   signupUser,
+  updateProfile,
 } from "@/lib/store/features/auth/authThunks";
 import type { RootState } from "@/lib/store";
 
@@ -37,6 +38,9 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(logoutUser.fulfilled, () => ({ ...initialState, sessionChecked: true }))
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+      })
       .addCase(restoreSession.fulfilled, (state, action) => {
         state.user = action.payload?.user ?? null;
         state.sessionChecked = true;

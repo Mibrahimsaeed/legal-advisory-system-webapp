@@ -10,6 +10,7 @@ import { LinkButton } from "@/components/common/link-button";
 import { getArchetype } from "@/lib/constants/archetypes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ROUTES } from "@/lib/constants/routes";
+import { selectUser } from "@/lib/store/features/auth/authSlice";
 import type { LegalDomain } from "@/lib/store/features/consultations/consultations.types";
 import { createConsultationId } from "@/lib/store/features/consultations/consultations.utils";
 import {
@@ -19,6 +20,7 @@ import {
   selectIsConsultationPending,
 } from "@/lib/store/features/consultations/consultationsSlice";
 import { askQuestion } from "@/lib/store/features/consultations/consultationsThunks";
+import { consumeFreeQuery } from "@/lib/store/features/usage/usageThunks";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 
 interface ConsultationViewProps {
@@ -29,6 +31,7 @@ interface ConsultationViewProps {
 export function ConsultationView({ consultationId, archetypeId = null }: ConsultationViewProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const user = useAppSelector(selectUser);
   const consultation = useAppSelector(selectConsultationById(consultationId));
   const loaded = useAppSelector(selectConsultationsLoaded);
   const pending = useAppSelector(selectIsConsultationPending(consultationId));
@@ -43,14 +46,20 @@ export function ConsultationView({ consultationId, archetypeId = null }: Consult
     else setNewDomain(next);
   };
 
-  const submit = (question: string) => {
+  const submit = async (question: string) => {
+    if (!user) return;
+    const allowance = await dispatch(consumeFreeQuery(user.id));
+    if (!consumeFreeQuery.fulfilled.match(allowance)) {
+      router.push(ROUTES.upgrade);
+      return;
+    }
     const id = consultationId ?? createConsultationId();
     void dispatch(askQuestion({ consultationId: id, question, domain, archetype: archetype?.id, askedAt: new Date().toISOString() }));
     if (!consultationId) router.push(ROUTES.consultationDetail(id));
   };
 
   const send = () => {
-    submit(draft.trim());
+    void submit(draft.trim());
     setDraft("");
   };
 
