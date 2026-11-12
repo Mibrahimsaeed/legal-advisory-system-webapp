@@ -1,69 +1,77 @@
 import { ApiError } from "@/lib/api/client";
-import {
-  clearSession,
-  hashPassword,
-  readSession,
-  readUsers,
-  writeSession,
-  writeUsers,
-} from "@/lib/mock/auth-store";
-import { findDemoAdmin, isReservedAdminEmail } from "@/lib/mock/admin-accounts";
+import { clearTokens, getAccessToken, getRefreshToken, setTokens } from "@/lib/auth/token-storage";
+import { api } from "@/lib/axios";
 import type {
   AuthResponse,
   LoginPayload,
   SignupPayload,
   UpdateProfilePayload,
+  User,
 } from "@/lib/store/features/auth/auth.types";
 
-// Prototype implementation backed by localStorage. Swap each method for an
-// apiClient call ("/auth/login", "/auth/signup", ...) once a backend exists;
-// the signatures and return types stay the same.
-const LATENCY_MS = 450;
-const wait = () => new Promise((resolve) => setTimeout(resolve, LATENCY_MS));
+interface TokenResponse {
+  access_token: string;
+  refresh_token: string;
+}
+
+interface UserProfileResponse {
+  id: string;
+  email: string;
+  full_name: string | null;
+  is_admin?: boolean;
+}
+
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
+
+function toUser(profile: UserProfileResponse): User {
+  return {
+    id: profile.id,
+    email: profile.email,
+    fullName: profile.full_name ?? profile.email.split("@")[0],
+    role: profile.is_admin ? "admin" : "user",
+  };
+}
+
+async function fetchCurrentUser(): Promise<AuthResponse> {
+  const { data } = await api.get<UserProfileResponse>("/users/me");
+  return { user: toUser(data) };
+}
 
 export const authApi = {
   login: async ({ email, password }: LoginPayload): Promise<AuthResponse> => {
-    await wait();
-    const admin = findDemoAdmin(normalizeEmail(email), password);
-    if (admin) {
-      writeSession(admin);
-      return { user: admin };
-    }
-    const passwordHash = await hashPassword(password);
-    const match = readUsers().find(
-      (user) => user.email === normalizeEmail(email) && user.passwordHash === passwordHash,
-    );
-    if (!match) throw new ApiError("Invalid email or password.", 401);
-    const user = { id: match.id, fullName: match.fullName, email: match.email };
-    writeSession(user);
-    return { user };
+    const { data } = await api.post<TokenResponse>("/auth/login", { email: normalizeEmail(email), password });
+    setTokens({ accessToken: data.access_token, refreshToken: data.refresh_token });
+    return fetchCurrentUser();
   },
+  // Registration returns the profile without tokens, so sign in straight after.
   signup: async ({ fullName, email, password }: SignupPayload): Promise<AuthResponse> => {
-    await wait();
-    const users = readUsers();
-    if (isReservedAdminEmail(normalizeEmail(email)) || users.some((user) => user.email === normalizeEmail(email))) {
-      throw new ApiError("An account with this email already exists.", 409);
-    }
-    const user = { id: window.crypto.randomUUID(), fullName: fullName.trim(), email: normalizeEmail(email) };
-    writeUsers([...users, { ...user, passwordHash: await hashPassword(password) }]);
-    writeSession(user);
-    return { user };
+    await api.post<UserProfileResponse>("/auth/register", {
+      email: normalizeEmail(email),
+      password,
+      full_name: fullName.trim(),
+    });
+    return authApi.login({ email, password });
   },
   updateProfile: async ({ fullName }: UpdateProfilePayload): Promise<AuthResponse> => {
-    await wait();
-    const session = readSession();
-    if (!session) throw new ApiError("You are not signed in.", 401);
-    const user = { ...session, fullName: fullName.trim() };
-    writeUsers(readUsers().map((stored) => (stored.id === user.id ? { ...stored, fullName: user.fullName } : stored)));
-    writeSession(user);
-    return { user };
+    const { data } = await api.patch<UserProfileResponse>("/users/me", { full_name: fullName.trim() });
+    return { user: toUser(data) };
   },
+  // The local session ends even if revoking the refresh token fails.
   logout: async (): Promise<void> => {
-    clearSession();
+    const refreshToken = getRefreshToken();
+    clearTokens();
+    if (refreshToken) await api.post("/auth/logout", { refresh_token: refreshToken }).catch(() => undefined);
   },
   session: async (): Promise<AuthResponse | null> => {
-    const user = readSession();
-    return user ? { user } : null;
+    if (!getAccessToken()) return null;
+    try {
+      return await fetchCurrentUser();
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        clearTokens();
+        return null;
+      }
+      throw error;
+    }
   },
 };
