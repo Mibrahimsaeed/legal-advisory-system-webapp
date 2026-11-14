@@ -1,77 +1,69 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AdminPage } from "@/components/admin/admin-page";
+import { DataStateCard } from "@/components/admin/data-state-card";
+import { PaginationControls } from "@/components/admin/pagination-controls";
 import { DeleteUserDialog } from "@/components/admin/users/delete-user-dialog";
 import { UserDetailsDialog } from "@/components/admin/users/user-details-dialog";
 import { UsersTable } from "@/components/admin/users/users-table";
 import { UsersToolbar } from "@/components/admin/users/users-toolbar";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useAdminAccess } from "@/hooks/use-admin-access";
-import { DEFAULT_USER_FILTERS, filterUsers } from "@/lib/admin/user-filters";
+import { useAdminResource } from "@/hooks/use-admin-resource";
+import { useAdminUserActions } from "@/hooks/use-admin-user-actions";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { DEFAULT_USER_FILTERS, filterByRole, type UserFilters } from "@/lib/admin/user-filters";
+import { SEARCH_DEBOUNCE_MS } from "@/lib/constants/admin-tables";
 import type { AdminUser } from "@/lib/store/features/admin/admin.types";
-import { selectAdminError, selectAdminUsers, selectAdminUsersStatus } from "@/lib/store/features/admin/adminSlice";
-import { deleteAdminUser, loadAdminUsers, updateAdminUserStatus } from "@/lib/store/features/admin/adminThunks";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { selectAdminUsers } from "@/lib/store/features/admin/adminSlice";
+import { loadAdminUsers } from "@/lib/store/features/admin/adminThunks";
 
 export function UsersView() {
-  const dispatch = useAppDispatch();
   const { user: currentUser } = useAdminAccess();
-  const users = useAppSelector(selectAdminUsers);
-  const status = useAppSelector(selectAdminUsersStatus);
-  const error = useAppSelector(selectAdminError);
   const [filters, setFilters] = useState(DEFAULT_USER_FILTERS);
+  const [offset, setOffset] = useState(0);
   const [viewing, setViewing] = useState<AdminUser | null>(null);
-  const [deleting, setDeleting] = useState<AdminUser | null>(null);
-  const visible = filterUsers(users, filters);
+  const q = useDebouncedValue(filters.query, SEARCH_DEBOUNCE_MS);
+  const users = useAdminResource(selectAdminUsers, loadAdminUsers, { q, status: filters.status, offset });
+  const actions = useAdminUserActions(users.reload);
+  const items = users.data?.items ?? [];
+  const visible = filterByRole(items, filters.role);
 
-  useEffect(() => {
-    if (status === "idle") void dispatch(loadAdminUsers());
-  }, [status, dispatch]);
-
-  const toggleStatus = (user: AdminUser) =>
-    void dispatch(updateAdminUserStatus({ id: user.id, status: user.status === "active" ? "inactive" : "active" }));
-
-  const confirmDelete = (user: AdminUser) => {
-    void dispatch(deleteAdminUser(user.id));
-    setDeleting(null);
+  const changeFilters = (next: UserFilters) => {
+    setFilters(next);
+    setOffset(0);
   };
 
   return (
-    <AdminPage
-      title="User Management"
-      description="Search, filter and manage accounts. Changes apply to the sample user list for this session only and are not saved to a database."
-      sampleData
-    >
-      <UsersToolbar filters={filters} onChange={setFilters} />
-      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      <Card className="rounded-2xl py-0 shadow-sm">
-        <CardContent className="px-2 py-1">
-          {status !== "succeeded" ? (
-            <div className="flex flex-col gap-2 p-2">
-              {Array.from({ length: 6 }, (_, index) => (
-                <Skeleton key={index} className="h-10" />
-              ))}
-            </div>
-          ) : visible.length ? (
-            <UsersTable
-              users={visible}
-              currentUserId={currentUser?.id}
-              onView={setViewing}
-              onToggleStatus={toggleStatus}
-              onDelete={setDeleting}
-            />
-          ) : (
-            <p className="p-8 text-center text-sm text-muted-foreground">No users match these filters.</p>
-          )}
-        </CardContent>
-      </Card>
-      <p className="text-xs text-muted-foreground">
-        Showing {visible.length} of {users.length} users
-      </p>
+    <AdminPage title="User Management" description="Search, filter and manage registered accounts.">
+      <UsersToolbar filters={filters} onChange={changeFilters} />
+      {actions.error && <p role="alert" className="text-sm text-destructive">{actions.error}</p>}
+      <DataStateCard
+        loading={users.loading && !users.data}
+        refreshing={users.loading && Boolean(users.data)}
+        error={users.error}
+        empty={!visible.length}
+        emptyMessage={items.length ? "No users on this page match the role filter." : "No users match these filters."}
+        onRetry={users.reload}
+      >
+        <UsersTable
+          users={visible}
+          currentUserId={currentUser?.id}
+          pendingUserIds={actions.pendingUserIds}
+          onView={setViewing}
+          onToggleStatus={(user) => void actions.toggleStatus(user)}
+          onDelete={actions.setDeleting}
+        />
+      </DataStateCard>
+      {users.data && (
+        <PaginationControls offset={offset} shown={items.length} total={users.data.total} noun="users" onChange={setOffset} />
+      )}
       <UserDetailsDialog user={viewing} onClose={() => setViewing(null)} />
-      <DeleteUserDialog user={deleting} onCancel={() => setDeleting(null)} onConfirm={confirmDelete} />
+      <DeleteUserDialog
+        user={actions.deleting}
+        onCancel={() => actions.setDeleting(null)}
+        onConfirm={(user) => void actions.confirmDelete(user)}
+      />
     </AdminPage>
   );
 }

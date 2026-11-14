@@ -6,6 +6,7 @@ import { UserRowActions } from "@/components/admin/users/user-row-actions";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDate, formatNumber } from "@/lib/admin/format";
+import { getUserLockReason } from "@/lib/admin/user-filters";
 import { ROLE_LABELS } from "@/lib/auth/roles";
 import { PLAN_LABELS } from "@/lib/constants/admin-users";
 import type { AdminUser } from "@/lib/store/features/admin/admin.types";
@@ -13,6 +14,7 @@ import type { AdminUser } from "@/lib/store/features/admin/admin.types";
 interface UsersTableProps {
   users: AdminUser[];
   currentUserId: string | undefined;
+  pendingUserIds: readonly string[];
   onView: (user: AdminUser) => void;
   onToggleStatus: (user: AdminUser) => void;
   onDelete: (user: AdminUser) => void;
@@ -20,7 +22,7 @@ interface UsersTableProps {
 
 const COLUMNS = ["User", "Email", "Role", "Status", "Plan", "Chats Used", "Joined"] as const;
 
-export function UsersTable({ users, currentUserId, onView, onToggleStatus, onDelete }: UsersTableProps) {
+export function UsersTable({ users, currentUserId, pendingUserIds, onView, onToggleStatus, onDelete }: UsersTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -54,7 +56,8 @@ export function UsersTable({ users, currentUserId, onView, onToggleStatus, onDel
             <TableCell>
               <UserRowActions
                 user={user}
-                isSelf={user.id === currentUserId}
+                lockReason={getUserLockReason(user, currentUserId)}
+                busy={pendingUserIds.includes(user.id)}
                 onView={() => onView(user)}
                 onToggleStatus={() => onToggleStatus(user)}
                 onDelete={() => onDelete(user)}

@@ -25,7 +25,8 @@ export function DeleteUserDialog({ user, onCancel, onConfirm }: DeleteUserDialog
         <AlertDialogHeader>
           <AlertDialogTitle>Delete {user?.fullName}?</AlertDialogTitle>
           <AlertDialogDescription>
-            This removes the account from the sample user list for this session. No real data is deleted.
+            This permanently deletes {user?.email} and their conversations and uploaded documents. Payment
+            records are kept. This cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

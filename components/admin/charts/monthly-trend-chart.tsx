@@ -10,6 +10,7 @@ interface MonthlyTrendChartProps {
   data: MonthlyValue[];
   label: string;
   variant: "line" | "bar";
+  period?: "month" | "day";
   formatValue?: (value: number) => string;
   formatAxis?: (value: number) => string;
 }
@@ -18,6 +19,7 @@ export function MonthlyTrendChart({
   data,
   label,
   variant,
+  period = "month",
   formatValue = formatNumber,
   formatAxis = formatNumber,
 }: MonthlyTrendChartProps) {
@@ -25,7 +27,7 @@ export function MonthlyTrendChart({
   const Chart = variant === "line" ? LineChart : BarChart;
 
   return (
-    <ChartContainer config={config} className="aspect-auto h-64 w-full" aria-label={`${label} by month`}>
+    <ChartContainer config={config} className="aspect-auto h-64 w-full" aria-label={`${label} by ${period}`}>
       <Chart accessibilityLayer data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />

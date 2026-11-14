@@ -3,7 +3,7 @@
 import { StatusBadge } from "@/components/admin/users/status-badge";
 import { UserIdentity } from "@/components/admin/users/user-identity";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { formatDate, formatNumber } from "@/lib/admin/format";
+import { formatDate, formatDateTime, formatNumber } from "@/lib/admin/format";
 import { ROLE_LABELS } from "@/lib/auth/roles";
 import { PLAN_LABELS } from "@/lib/constants/admin-users";
 import type { AdminUser } from "@/lib/store/features/admin/admin.types";
@@ -19,8 +19,11 @@ export function UserDetailsDialog({ user, onClose }: UserDetailsDialogProps) {
         { label: "User ID", value: user.id },
         { label: "Role", value: ROLE_LABELS[user.role] },
         { label: "Plan", value: PLAN_LABELS[user.plan] },
-        { label: "Chats used", value: formatNumber(user.chatsUsed) },
+        { label: "Questions asked", value: formatNumber(user.chatsUsed) },
+        { label: "Conversations", value: formatNumber(user.conversations) },
+        { label: "Uploaded documents", value: formatNumber(user.documents) },
         { label: "Joined", value: formatDate(user.joinedAt) },
+        { label: "Last active", value: user.lastActiveAt ? formatDateTime(user.lastActiveAt) : "Never" },
       ]
     : [];
 
@@ -29,7 +32,7 @@ export function UserDetailsDialog({ user, onClose }: UserDetailsDialogProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>User details</DialogTitle>
-          <DialogDescription>Account information from the sample user list.</DialogDescription>
+          <DialogDescription>Account information and activity recorded by the backend.</DialogDescription>
         </DialogHeader>
         {user && (
           <div className="flex flex-col gap-4">

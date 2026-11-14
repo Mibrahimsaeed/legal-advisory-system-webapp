@@ -9,12 +9,14 @@ export interface UserFilters {
 
 export const DEFAULT_USER_FILTERS: UserFilters = { query: "", role: "all", status: "all" };
 
-export function filterUsers(users: AdminUser[], { query, role, status }: UserFilters): AdminUser[] {
-  const needle = query.trim().toLowerCase();
-  return users.filter(
-    (user) =>
-      (role === "all" || user.role === role) &&
-      (status === "all" || user.status === status) &&
-      (!needle || user.fullName.toLowerCase().includes(needle) || user.email.toLowerCase().includes(needle)),
-  );
+// Search and status are filtered by the backend; it has no role filter, so role applies to the loaded page.
+export function filterByRole(users: AdminUser[], role: RoleFilter): AdminUser[] {
+  return role === "all" ? users : users.filter((user) => user.role === role);
+}
+
+// The backend refuses to change your own account or another admin's from the dashboard.
+export function getUserLockReason(user: AdminUser, currentUserId: string | undefined): string | null {
+  if (user.id === currentUserId) return "You can't change your own account.";
+  if (user.role !== "user") return "Admin accounts can't be changed from the dashboard.";
+  return null;
 }

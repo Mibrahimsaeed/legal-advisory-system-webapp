@@ -2,11 +2,6 @@ export type RagDocumentType = "statute" | "act" | "ordinance" | "regulation";
 
 export type RagIngestionStage = "idle" | "submitted" | "processing" | "completed" | "failed";
 
-export interface RagFileInfo {
-  name: string;
-  size: number;
-}
-
 export interface RagDocumentInput {
   title: string;
   documentType: RagDocumentType;
@@ -16,8 +11,11 @@ export interface RagDocumentInput {
   description: string;
   source: string;
   content: string;
-  file: RagFileInfo | null;
+  file: File | null;
 }
+
+// Statuses the backend reports for an ingestion job (app/rag/schemas.py RagJobOut).
+export type RagJobStatus = "submitted" | "processing" | "completed" | "failed";
 
 export interface RagSubmission {
   jobId: string;
@@ -25,4 +23,13 @@ export interface RagSubmission {
   documentType: RagDocumentType;
   jurisdiction: string;
   submittedAt: string;
+  status: RagJobStatus;
+  error: string | null;
+}
+
+export interface RagJob {
+  jobId: string;
+  status: RagJobStatus;
+  completedAt: string | null;
+  errorMessage: string | null;
 }

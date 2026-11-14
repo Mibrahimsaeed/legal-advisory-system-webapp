@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { DatabaseZapIcon } from "lucide-react";
 import { RagFileField } from "@/components/admin/rag/rag-file-field";
 import { FormField } from "@/components/forms/form-field";
@@ -18,6 +19,9 @@ export function RagDocumentForm() {
   const stage = useAppSelector(selectRagStage);
   const busy = stage === "submitted" || stage === "processing";
   const { values, file, errors, setValue, changeFile, validate, reset } = useRagForm();
+  const polling = useRef<{ abort: () => void } | null>(null);
+
+  useEffect(() => () => polling.current?.abort(), []);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,7 +29,10 @@ export function RagDocumentForm() {
     if (!input) return;
     const submitted = await dispatch(submitRagDocument(input));
     if (!submitRagDocument.fulfilled.match(submitted)) return;
-    const processed = await dispatch(processRagDocument(submitted.payload.jobId));
+    const request = dispatch(processRagDocument(submitted.payload.jobId));
+    polling.current = request;
+    const processed = await request;
+    polling.current = null;
     if (processRagDocument.fulfilled.match(processed)) reset();
   };
 

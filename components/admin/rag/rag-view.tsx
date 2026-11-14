@@ -22,7 +22,8 @@ export function RagView() {
     >
       <p className="flex items-start gap-2 rounded-lg border bg-muted/50 p-3 text-sm text-muted-foreground">
         <InfoIcon className="mt-0.5 size-4 shrink-0" aria-hidden />
-        Mock workflow: submitting shows the ingestion steps but does not change the RAG database or embeddings yet.
+        Submissions are stored by the backend and processed in the background. This page follows each job until it
+        completes or fails.
       </p>
       <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <SectionCard title="New legal document" description="Metadata and content for ingestion">

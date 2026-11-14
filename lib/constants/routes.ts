@@ -13,6 +13,10 @@ export const ROUTES = {
     users: "/admin/users",
     rag: "/admin/rag",
     analytics: "/admin/analytics",
+    questions: "/admin/questions",
+    documents: "/admin/documents",
+    system: "/admin/system",
+    audit: "/admin/audit",
     profile: "/admin/profile",
   },
 } as const;
