@@ -4,6 +4,8 @@ import { api } from "@/lib/axios";
 import type {
   AuthResponse,
   LoginPayload,
+  RequestPasswordResetPayload,
+  ResetPasswordPayload,
   SignupPayload,
   UpdateProfilePayload,
   User,
@@ -12,6 +14,10 @@ import type {
 interface TokenResponse {
   access_token: string;
   refresh_token: string;
+}
+
+interface MessageResponse {
+  message: string;
 }
 
 interface UserProfileResponse {
@@ -61,6 +67,19 @@ export const authApi = {
     const refreshToken = getRefreshToken();
     clearTokens();
     if (refreshToken) await api.post("/auth/logout", { refresh_token: refreshToken }).catch(() => undefined);
+  },
+  // The backend answers the same way whether or not the account exists.
+  requestPasswordReset: async ({ email }: RequestPasswordResetPayload): Promise<string> => {
+    const { data } = await api.post<MessageResponse>("/auth/forgot-password", { email: normalizeEmail(email) });
+    return data.message;
+  },
+  resetPassword: async ({ email, code, newPassword }: ResetPasswordPayload): Promise<string> => {
+    const { data } = await api.post<MessageResponse>("/auth/reset-password", {
+      email: normalizeEmail(email),
+      code: code.trim(),
+      new_password: newPassword,
+    });
+    return data.message;
   },
   session: async (): Promise<AuthResponse | null> => {
     if (!getAccessToken()) return null;

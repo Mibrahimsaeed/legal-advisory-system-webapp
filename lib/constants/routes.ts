@@ -2,6 +2,8 @@ export const ROUTES = {
   home: "/",
   login: "/login",
   signup: "/signup",
+  forgotPassword: "/forgot-password",
+  resetPassword: "/reset-password",
   consultation: "/consultation",
   consultationDetail: (id: string) => `/consultation/${id}`,
   settings: "/settings",

@@ -3,6 +3,7 @@ import adminReducer from "@/lib/store/features/admin/adminSlice";
 import authReducer from "@/lib/store/features/auth/authSlice";
 import consultationsReducer from "@/lib/store/features/consultations/consultationsSlice";
 import counterReducer from "@/lib/store/features/counter/counterSlice";
+import passwordResetReducer from "@/lib/store/features/passwordReset/passwordResetSlice";
 import ragReducer from "@/lib/store/features/rag/ragSlice";
 import usageReducer from "@/lib/store/features/usage/usageSlice";
 
@@ -15,6 +16,7 @@ export const makeStore = () => {
       usage: usageReducer,
       admin: adminReducer,
       rag: ragReducer,
+      passwordReset: passwordResetReducer,
     },
   });
 };

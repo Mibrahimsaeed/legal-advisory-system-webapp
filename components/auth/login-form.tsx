@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FieldError, FieldGroup } from "@/components/ui/field";
 import { FormField } from "@/components/forms/form-field";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { useFormState } from "@/hooks/use-form-state";
 import { getHomeRoute } from "@/lib/auth/roles";
+import { ROUTES } from "@/lib/constants/routes";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   authErrorCleared,
@@ -57,6 +59,12 @@ export function LoginForm() {
           onChange={handleChange}
           error={errors.password}
         />
+        <Link
+          href={ROUTES.forgotPassword}
+          className="-mt-3 self-end text-sm font-medium text-primary underline-offset-4 hover:underline"
+        >
+          Forgot password?
+        </Link>
         <FieldError>{error}</FieldError>
         <SubmitButton loading={loading}>Log in</SubmitButton>
       </FieldGroup>

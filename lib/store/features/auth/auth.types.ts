@@ -16,6 +16,16 @@ export interface SignupPayload extends LoginPayload {
   fullName: string;
 }
 
+export interface RequestPasswordResetPayload {
+  email: string;
+}
+
+export interface ResetPasswordPayload {
+  email: string;
+  code: string;
+  newPassword: string;
+}
+
 export interface UpdateProfilePayload {
   fullName: string;
 }
