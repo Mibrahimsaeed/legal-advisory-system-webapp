@@ -1,7 +1,9 @@
 "use client";
 
 import { AdminPage } from "@/components/admin/admin-page";
+import { AnalyticsActivity } from "@/components/admin/analytics/analytics-activity";
 import { AnalyticsKpis } from "@/components/admin/analytics/analytics-kpis";
+import { InlineError } from "@/components/admin/inline-error";
 import { SectionCard } from "@/components/admin/section-card";
 import { MonthlyTrendChart } from "@/components/admin/charts/monthly-trend-chart";
 import { ShareBars } from "@/components/admin/charts/share-bars";
@@ -11,17 +13,13 @@ import { useAdminOverview } from "@/hooks/use-admin-overview";
 import { formatCompactPKR, formatPKR } from "@/lib/admin/format";
 
 export function AnalyticsView() {
-  const { overview, failed } = useAdminOverview();
+  const { overview, error, reload } = useAdminOverview();
 
   return (
-    <AdminPage
-      title="Analytics"
-      description="Business statistics derived from the sample overview data: conversion, usage and revenue trends."
-      sampleData
-    >
-      {failed && <p role="alert" className="text-sm text-destructive">Analytics could not be loaded.</p>}
+    <AdminPage title="Analytics" description="Conversion, usage and revenue trends calculated from live platform data.">
+      {error && !overview && <InlineError message={error} onRetry={reload} />}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        {overview ? <AnalyticsKpis overview={overview} /> : <StatCardSkeleton count={4} />}
+        {overview ? <AnalyticsKpis overview={overview} /> : !error && <StatCardSkeleton count={4} />}
       </div>
       {overview ? (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -42,8 +40,9 @@ export function AnalyticsView() {
           </SectionCard>
         </div>
       ) : (
-        <Skeleton className="h-80 rounded-2xl" />
+        !error && <Skeleton className="h-80 rounded-2xl" />
       )}
+      <AnalyticsActivity />
     </AdminPage>
   );
 }

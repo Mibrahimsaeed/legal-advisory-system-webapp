@@ -8,7 +8,6 @@ export const ROLE_FILTER_OPTIONS: readonly { value: RoleFilter; label: string }[
   { value: "all", label: "All roles" },
   { value: "user", label: "Users" },
   { value: "admin", label: "Admins" },
-  { value: "super_admin", label: "Super Admins" },
 ];
 
 export const STATUS_FILTER_OPTIONS: readonly { value: StatusFilter; label: string }[] = [

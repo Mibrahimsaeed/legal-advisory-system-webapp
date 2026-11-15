@@ -1,18 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-import { selectAdminOverview, selectAdminOverviewStatus } from "@/lib/store/features/admin/adminSlice";
+import { useAdminResource } from "@/hooks/use-admin-resource";
+import { selectAdminOverview } from "@/lib/store/features/admin/adminSlice";
 import { loadAdminOverview } from "@/lib/store/features/admin/adminThunks";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 
 export function useAdminOverview() {
-  const dispatch = useAppDispatch();
-  const overview = useAppSelector(selectAdminOverview);
-  const status = useAppSelector(selectAdminOverviewStatus);
-
-  useEffect(() => {
-    if (status === "idle") void dispatch(loadAdminOverview());
-  }, [status, dispatch]);
-
-  return { overview, failed: status === "failed" };
+  const { data, error, reload } = useAdminResource(selectAdminOverview, loadAdminOverview, undefined);
+  return { overview: data, error, reload };
 }

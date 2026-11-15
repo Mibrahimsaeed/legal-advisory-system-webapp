@@ -33,7 +33,8 @@ components/
   <feature>/              Feature components (auth/, dashboard/, cases/, ...)
 hooks/                    Reusable hooks (use-form-state.ts, ...)
 lib/
-  api/                    apiClient + one <feature>.api.ts per backend area
+  axios.ts                the one Axios instance (`api`)
+  api/                    ApiError + one <feature>.api.ts per backend area
   constants/              routes.ts, app.ts, other static values
   validators/             Pure validation functions per feature
   store/
@@ -63,12 +64,12 @@ lib/
 
 ## 5. API integration with thunks
 
-- All HTTP goes through `apiClient` in `lib/api/client.ts`. Components never call `fetch` directly.
+- All HTTP goes through the single Axios instance `api` in `lib/axios.ts`. Never call `fetch` or `axios.create()` anywhere else. It attaches the Bearer token, refreshes it once on a 401, and turns FastAPI `{detail}` errors into `ApiError` (`lib/api/client.ts`).
 - Each backend area gets one file in `lib/api/` (`auth.api.ts`, `cases.api.ts`, ...) exposing plain typed functions. These files know URLs and payload types, nothing about Redux.
 - Every API call used by the UI is wrapped in a thunk in `<feature>Thunks.ts`, built with `createAppAsyncThunk` from `@/lib/store/createAppAsyncThunk`. Catch errors and `rejectWithValue(getErrorMessage(error))` so `action.payload` is a user-facing string.
 - Handle `pending`/`fulfilled`/`rejected` in the slice's `extraReducers` (use `isAnyOf` when several thunks share handling).
 - Components dispatch the thunk and react to the result, for example `const result = await dispatch(loginUser(payload)); if (loginUser.fulfilled.match(result)) router.push(...)`.
-- Backend base URL comes from `NEXT_PUBLIC_API_URL` (defaults to `/api`). Put it in `.env.local`; never hardcode hosts.
+- The browser calls same-origin `/api/...`; `next.config.ts` rewrites it to the private `BASE_URL` from `.env.local` (e.g. `BASE_URL=http://127.0.0.1:8000`). Never hardcode hosts or expose the backend URL with `NEXT_PUBLIC_`.
 
 ## 6. Reusable components
 

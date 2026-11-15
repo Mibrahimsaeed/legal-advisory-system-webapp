@@ -1,8 +1,8 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import type { RootState } from "@/lib/store";
 import { logoutUser } from "@/lib/store/features/auth/authThunks";
-import type { RagIngestionStage, RagSubmission } from "@/lib/store/features/rag/rag.types";
-import { processRagDocument, submitRagDocument } from "@/lib/store/features/rag/ragThunks";
+import type { RagIngestionStage, RagJobStatus, RagSubmission } from "@/lib/store/features/rag/rag.types";
+import { processRagDocument, ragJobStatusChanged, submitRagDocument } from "@/lib/store/features/rag/ragThunks";
 
 interface RagState {
   stage: RagIngestionStage;
@@ -17,6 +17,14 @@ const initialState: RagState = {
   submissions: [],
   error: null,
 };
+
+function setSubmissionStatus(state: RagState, jobId: string, status: RagJobStatus, error: string | null = null) {
+  const submission = state.submissions.find((item) => item.jobId === jobId);
+  if (submission) {
+    submission.status = status;
+    submission.error = error;
+  }
+}
 
 const ragSlice = createSlice({
   name: "rag",
@@ -37,14 +45,24 @@ const ragSlice = createSlice({
       })
       .addCase(submitRagDocument.fulfilled, (state, action) => {
         const { title, documentType, jurisdiction } = action.meta.arg;
-        state.stage = "processing";
         state.activeJobId = action.payload.jobId;
-        state.submissions.unshift({ ...action.payload, title, documentType, jurisdiction });
+        state.submissions.unshift({ ...action.payload, title, documentType, jurisdiction, status: "submitted", error: null });
       })
-      .addCase(processRagDocument.fulfilled, (state) => {
-        state.stage = "completed";
+      .addCase(ragJobStatusChanged, (state, { payload }) => {
+        setSubmissionStatus(state, payload.jobId, payload.status, payload.errorMessage);
+        if (payload.jobId === state.activeJobId && payload.status !== "failed") state.stage = payload.status;
+      })
+      .addCase(processRagDocument.fulfilled, (state, { payload }) => {
+        setSubmissionStatus(state, payload.jobId, "completed");
+        if (payload.jobId === state.activeJobId) state.stage = "completed";
+      })
+      .addCase(processRagDocument.rejected, (state, { meta, payload }) => {
+        // Leaving the page aborts polling; that is not a processing failure.
+        if (meta.aborted) return;
+        setSubmissionStatus(state, meta.arg, "failed", payload ?? null);
       })
       .addMatcher(isAnyOf(submitRagDocument.rejected, processRagDocument.rejected), (state, action) => {
+        if (action.meta.aborted) return;
         state.stage = "failed";
         state.error = action.payload ?? "The document could not be processed.";
       });

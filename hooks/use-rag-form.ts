@@ -33,10 +33,7 @@ export function useRagForm() {
     setErrors((prev) => ({ ...prev, content: undefined }));
   };
 
-  const toInput = (): RagDocumentInput => ({
-    ...values,
-    file: file ? { name: file.name, size: file.size } : null,
-  });
+  const toInput = (): RagDocumentInput => ({ ...values, file });
 
   const validate = (): RagDocumentInput | null => {
     const input = toInput();

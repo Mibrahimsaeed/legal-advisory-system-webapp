@@ -5,9 +5,9 @@ import type { AskQuestionPayload } from "@/lib/store/features/consultations/cons
 
 export const loadConsultations = createAppAsyncThunk(
   "consultations/load",
-  async (userId: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      return await consultationsApi.list(userId);
+      return await consultationsApi.list();
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
     }
